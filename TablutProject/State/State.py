@@ -155,8 +155,28 @@ class State:
         # Aggiungi mosse nella colonna
         moves.extend((y, j) for y in range(top_limit, bottom_limit + 1) if y != i)
         # devo convertire una move in action
+        list_moves_banned = [
+            (3, 0),
+            (4, 0),
+            (5, 0),
+            (4, 1),
+            (3, 8),
+            (4, 8),
+            (5, 8),
+            (4, 7),
+            (0, 3),
+            (0, 4),
+            (0, 5),
+            (1, 4),
+            (8, 3),
+            (8, 4),
+            (8, 5),
+            (7, 4),
+        ]
+
         for r, c in moves:
-            ret.append(Action((i, j), (r, c), color))
+            if (r, c) not in list_moves_banned:
+                ret.append(Action((i, j), (r, c), color))
 
         return ret
 

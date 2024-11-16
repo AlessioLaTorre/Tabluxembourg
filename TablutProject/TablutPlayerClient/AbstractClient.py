@@ -1,6 +1,7 @@
 import socket
 import json
-from TablutProject.Utils import StreamUtils
+from TablutProject.Utils.Utils import StreamUtils
+from TablutProject.State import State
 
 
 class TablutClient:
@@ -16,7 +17,7 @@ class TablutClient:
         self.name = name
         self.timeout = timeout
         self.server_ip = ip_address
-        self.current_state = None
+        self.current_state: State = None
 
         if player.lower() == "white":
             self.player = "WHITE"
@@ -30,11 +31,12 @@ class TablutClient:
         # Setting up the socket
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.settimeout(self.timeout)
+        print(f"Connessione al server {self.server_ip}:{self.port}")
         self.socket.connect((self.server_ip, self.port))
+        print("Connessione effettuata")
 
         self.in_stream = self.socket.makefile("r")
         self.out_stream = self.socket.makefile("w")
-
 
     def write(self, action):
         """
@@ -44,14 +46,15 @@ class TablutClient:
         """
         StreamUtils.send_action(self.socket, action)
 
-
     def declare_name(self):
         """
         Sends the player's name to the server.
         """
+        print(f"Invio nome {self.name}")
         json_name = json.dumps(self.name)
         self.out_stream.write(json_name + "\n")
         self.out_stream.flush()
+        print("Invio nome effettuato")
 
     def read(self):
         """
@@ -67,6 +70,7 @@ class TablutClient:
         self.in_stream.close()
         self.out_stream.close()
         self.socket.close()
+
 
 # Example Configuration class for port definitions
 class Configuration:

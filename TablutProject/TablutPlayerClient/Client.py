@@ -9,6 +9,51 @@ from TablutProject.State import State
 import time
 import random
 import argparse
+from TablutProject.Utils.Utils import StreamUtils
+
+class TablutPlayerClient(TablutClient):
+
+    def play(self):
+
+        while True:
+            board, turn = StreamUtils.read_state(self.socket)
+            self.current_state.set_board(board)
+            self.current_state.set_turn(turn)
+
+            print(f"Current state: {self.current_state}")
+
+            print(f"Turn: {self.current_state.turn}")
+
+            if self.player == "WHITE":
+                if self.current_state.turn == "W":
+
+                    ...
+                elif self.current_state.turn.BLACK == self.current_state.get_turn():
+                    print("Waiting for opponent move ... ")
+                elif self.current_state.turn.BLACKWIN == self.current_state.get_turn():
+                    print("YOU LOSE")
+                    break
+                elif self.current_state.turn.WHITEWIN == self.current_state.get_turn():
+                    print("YOU WIN")
+                    break
+                elif self.current_state.turn.DRAW == self.current_state.get_turn():
+                    print("DRAW")
+
+            else:
+                if self.current_state.turn == "B":
+                    ...
+                elif self.current_state.turn.WHITE == self.current_state.get_turn():
+                    print("Waiting for opponent move ... ")
+                elif self.current_state.turn.BLACKWIN == self.current_state.get_turn():
+                    print("YOU WIN")
+                    break
+                elif self.current_state.turn.WHITEWIN == self.current_state.get_turn():
+                    print("YOU LOSE")
+                    break
+                elif self.current_state.turn.DRAW == self.current_state.get_turn():
+                    print("DRAW")
+
+
 
 
 if __name__ == "__main__":

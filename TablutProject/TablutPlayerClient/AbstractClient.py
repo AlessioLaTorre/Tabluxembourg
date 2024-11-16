@@ -60,8 +60,9 @@ class TablutClient:
         """
         Reads the current state from the server and updates the local state.
         """
-        state = StreamUtils.read_state(self.socket)
-        self.current_state.set_board(state)
+        board, turn = StreamUtils.read_state(self.socket)
+        self.current_state.set_board(board)
+        self.current_state.set_turn(turn)
 
     def close(self):
         """

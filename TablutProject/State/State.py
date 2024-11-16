@@ -121,6 +121,15 @@ class State:
     def set_turn(self, turn):
         self.turn = turn
 
+    def ammissible_actions(self, color):
+        ammissible_actions = []
+        for i in range(9):
+            for j in range(9):
+                if self.board[i][j] == color:
+                    
+                    ...
+        ...
+
     def __eq__(self, other):
         if not isinstance(other, State):
             return False

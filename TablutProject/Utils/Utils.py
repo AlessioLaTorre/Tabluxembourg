@@ -73,23 +73,23 @@ class StreamUtils:
         ar = np.array(data, dtype=object)
         # Selecting board (the array is (2,2) matrix, it has board and turn info)
         board_array = np.array(ar[0, 1], dtype=object)
-        #turn = ar[1, 1]            ######DA TOGLIERE
+        turn = ar[1, 1]
         # Converting in a numerical matrix
-        state = np.zeros((9, 9), dtype=State.Pawn)
+        board = np.zeros((9, 9), dtype=State.Pawn)
         for i in range(0, 9):
             for j in range(0, 9):
                 if board_array[i, j] == 'EMPTY':
-                    state[i, j] = State.Pawn.EMPTY.value
+                    board[i, j] = State.Pawn.EMPTY.value
                 elif board_array[i, j] == 'WHITE':
-                    state[i, j] = State.Pawn.WHITE.value
+                    board[i, j] = State.Pawn.WHITE.value
                 elif board_array[i, j] == 'BLACK':
-                    state[i, j] = State.Pawn.BLACK.value
+                    board[i, j] = State.Pawn.BLACK.value
                 elif board_array[i, j] == 'KING':
-                    state[i, j] = State.Pawn.KING.value
+                    board[i, j] = State.Pawn.KING.value
                     king_position = (i, j)
 
 
-        return state
+        return board, turn
 
 
 def recvall(sock, n):

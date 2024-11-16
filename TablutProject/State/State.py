@@ -1,5 +1,7 @@
 from enum import Enum
 import copy
+import numpy as np
+from Domain.Action import Action
 
 
 class State:
@@ -121,14 +123,52 @@ class State:
     def set_turn(self, turn):
         self.turn = turn
 
+    def get_moves(board, i, j, color):
+        # Verifica che ci sia una pedina nella posizione
+        if board[i, j] == 0:
+            return []
+        ret = []
+        board[board == "EMPTY"] = 0
+        board[board == "BLACK"] = 2
+        board[board == "WHITE"] = 1
+        board[board == "KING"] = 1
+        # Matrice booleana delle caselle vuote
+        is_empty = board == "0"
+
+        # Righe e colonne pertinenti
+        row = is_empty[i, :]
+        col = is_empty[:, j]
+
+        # Trova i limiti sulle righe
+        left_limit = max(np.where(~row[:j])[0], default=-1) + 1
+        right_limit = min(np.where(~row[j + 1 :])[0], default=row.size - j - 1) + j
+
+        # Trova i limiti sulle colonne
+        top_limit = max(np.where(~col[:i])[0], default=-1) + 1
+        bottom_limit = min(np.where(~col[i + 1 :])[0], default=col.size - i - 1) + i
+
+        # Genera le posizioni valide
+        moves = []
+
+        # Aggiungi mosse nella riga
+        moves.extend((i, x) for x in range(left_limit, right_limit + 1) if x != j)
+        # Aggiungi mosse nella colonna
+        moves.extend((y, j) for y in range(top_limit, bottom_limit + 1) if y != i)
+        # devo convertire una move in action
+        for r, c in moves:
+            ret.append(Action((i, j), (r, c), color))
+
+        return ret
+
     def ammissible_actions(self, color):
         ammissible_actions = []
         for i in range(9):
             for j in range(9):
                 if self.board[i][j] == color:
-                    
-                    ...
-        ...
+                    ammissible_actions += self.get_moves(
+                        np.array(self.board), i, j, color
+                    )
+        return ammissible_actions
 
     def __eq__(self, other):
         if not isinstance(other, State):

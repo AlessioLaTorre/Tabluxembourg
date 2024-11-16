@@ -4,28 +4,33 @@ from typing import Union
 
 class InvalidParameterException(Exception):
     """Eccezione personalizzata per parametri non validi."""
+
     pass
 
 
 @dataclass
 class Action:
-    from_: str  # Usato `from_` perché `from` è una parola riservata in Python
-    to: str
+    from_: tuple  # Usato `from_` perché `from` è una parola riservata in Python
+    to: tuple
     turn: str  # `turn` rappresenterà una stringa che indica il turno (ad esempio "WHITE" o "BLACK")
 
     def __post_init__(self):
         # Validazione delle stringhe `from_` e `to`
         if len(self.from_) != 2 or len(self.to) != 2:
-            raise InvalidParameterException("The FROM and TO strings must have a length of 2")
+            raise InvalidParameterException(
+                "The FROM and TO strings must have a length of 2"
+            )
 
     def get_from(self) -> str:
-        return self.from_
+        letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+        return letters[self.from_[0]] + str(self.from_[1] + 1)
 
     def set_from(self, from_: str):
         self.from_ = from_
 
     def get_to(self) -> str:
-        return self.to
+        letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+        return letters[self.to[0]] + str(self.to[1] + 1)
 
     def set_to(self, to: str):
         self.to = to

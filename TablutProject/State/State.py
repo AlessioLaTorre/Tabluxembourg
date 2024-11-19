@@ -1,7 +1,7 @@
 from enum import Enum
 import copy
 import numpy as np
-from Domain.Action import Action
+from TablutProject.Domain.Action import Action
 
 
 class State:
@@ -123,15 +123,15 @@ class State:
     def set_turn(self, turn):
         self.turn = turn
 
-    def get_moves(board, i, j, color):
+    def get_moves(self, board, i, j, color):
         # Verifica che ci sia una pedina nella posizione
         if board[i, j] == 0:
             return []
         ret = []
-        board[board == "EMPTY"] = 0
-        board[board == "BLACK"] = 2
-        board[board == "WHITE"] = 1
-        board[board == "KING"] = 1
+        board[board == "O"] = 0
+        board[board == "B"] = 2
+        board[board == "W"] = 1
+        board[board == "K"] = 1
         # Matrice booleana delle caselle vuote
         is_empty = board == "0"
 
@@ -155,7 +155,8 @@ class State:
         # Aggiungi mosse nella colonna
         moves.extend((y, j) for y in range(top_limit, bottom_limit + 1) if y != i)
         # devo convertire una move in action
-        list_moves_banned = [
+        list_king_banned = [
+            #Starting black
             (3, 0),
             (4, 0),
             (5, 0),
@@ -173,11 +174,59 @@ class State:
             (8, 5),
             (7, 4),
         ]
+        list_moves_banned = [
+            #Starting black
+            (3, 0),
+            (4, 0),
+            (5, 0),
+            (4, 1),
+            (3, 8),
+            (4, 8),
+            (5, 8),
+            (4, 7),
+            (0, 3),
+            (0, 4),
+            (0, 5),
+            (1, 4),
+            (8, 3),
+            (8, 4),
+            (8, 5),
+            (7, 4)]
+        ''',
+            #update
+            #First Row
+            (0, 0),
+            (0, 1),
+            (0, 2),
+            (0, 6),
+            (0, 7),
+            (0, 8),
+            #First column
+            (1, 0),
+            (2, 0),
+            (6, 0),
+            (7, 0),
+            (8, 0),
+            #Last Row
+            (8, 1),
+            (8, 2),
+            (8, 6),
+            (8, 7),
+            (8, 8),
+            #Last Column
+            (1, 8),
+            (2, 8),
+            (6, 8),
+            (7, 8),'''
 
-        for r, c in moves:
-            if (r, c) not in list_moves_banned:
-                ret.append(Action((i, j), (r, c), color))
-
+        if color == "W" or color == "B":
+            for r, c in moves:
+                if (r, c) not in list_moves_banned:
+                    ret.append(Action((i, j), (r, c), color))
+        else:
+            for r, c in moves:
+                if (r, c) not in list_king_banned:
+                    ret.append(Action((i, j), (r, c), color))
         return ret
 
     def ammissible_actions(self, color):
@@ -218,3 +267,4 @@ class State:
                 if cell == color:
                     count += 1
         return count
+

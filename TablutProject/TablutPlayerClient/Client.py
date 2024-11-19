@@ -1,5 +1,6 @@
 import sys
 import os
+import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
@@ -12,6 +13,7 @@ import argparse
 from TablutProject.Utils.Utils import StreamUtils
 
 class TablutPlayerClient(TablutClient):
+    list_of_state_reached: list
 
     def play(self):
 
@@ -26,10 +28,18 @@ class TablutPlayerClient(TablutClient):
 
             if self.player == "WHITE":
                 if self.current_state.turn == "W":
-
+                    ammisible_actions = self.current_state.ammisible_actions("W")
+                    r = np.arange(len(ammisible_actions))
+                    np.random.shuffle(r)
+                    for i in r:
+                        action = ammisible_actions[i]
+                        if action.is_good_enough(self.player, self.current_state):
+                            StreamUtils.send_action(self.socket, action)
+                            break
                     ...
                 elif self.current_state.turn.BLACK == self.current_state.get_turn():
                     print("Waiting for opponent move ... ")
+                    break
                 elif self.current_state.turn.BLACKWIN == self.current_state.get_turn():
                     print("YOU LOSE")
                     break
@@ -38,6 +48,7 @@ class TablutPlayerClient(TablutClient):
                     break
                 elif self.current_state.turn.DRAW == self.current_state.get_turn():
                     print("DRAW")
+                    break
 
             else:
                 if self.current_state.turn == "B":
@@ -46,6 +57,7 @@ class TablutPlayerClient(TablutClient):
                     print("Waiting for opponent move ... ")
                 elif self.current_state.turn.BLACKWIN == self.current_state.get_turn():
                     print("YOU WIN")
+                    metti_nel_file_gli_stati_assegnando_un_valore_positivo
                     break
                 elif self.current_state.turn.WHITEWIN == self.current_state.get_turn():
                     print("YOU LOSE")
@@ -64,18 +76,21 @@ if __name__ == "__main__":
         help="Player role (white or black)",
         required=True,
         choices=["white", "black"],
+        default="white"
     )
     parser.add_argument(
         "-t",
         "--timeout",
         help="Timeout in seconds",
         required=True,
+        default=60,
     )
     parser.add_argument(
         "-i",
         "--ip",
         help="IP address of the server",
         required=True,
+        default="127.0.0.1",
     )
 
     args = parser.parse_args()

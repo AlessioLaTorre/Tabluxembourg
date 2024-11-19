@@ -1,6 +1,7 @@
 import sys
 import os
 import numpy as np
+import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
@@ -33,7 +34,7 @@ class TablutPlayerClient(TablutClient):
                     np.random.shuffle(r)
                     for i in r:
                         action = ammisible_actions[i]
-                        if action.is_good_enough(self.player, self.current_state):
+                        if action.is_good_enough(self.player, self.current_state, self.list_of_state_reached):
                             StreamUtils.send_action(self.socket, action)
                             break
                     ...
@@ -41,9 +42,11 @@ class TablutPlayerClient(TablutClient):
                     print("Waiting for opponent move ... ")
                     break
                 elif self.current_state.turn.BLACKWIN == self.current_state.get_turn():
+                    self.aggiorna_file(False)
                     print("YOU LOSE")
                     break
                 elif self.current_state.turn.WHITEWIN == self.current_state.get_turn():
+                    self.aggiorna_file(True)
                     print("YOU WIN")
                     break
                 elif self.current_state.turn.DRAW == self.current_state.get_turn():
@@ -56,15 +59,46 @@ class TablutPlayerClient(TablutClient):
                 elif self.current_state.turn.WHITE == self.current_state.get_turn():
                     print("Waiting for opponent move ... ")
                 elif self.current_state.turn.BLACKWIN == self.current_state.get_turn():
+                    self.aggiorna_file(True)
                     print("YOU WIN")
-                    metti_nel_file_gli_stati_assegnando_un_valore_positivo
                     break
                 elif self.current_state.turn.WHITEWIN == self.current_state.get_turn():
+                    self.aggiorna_file(False)
                     print("YOU LOSE")
                     break
                 elif self.current_state.turn.DRAW == self.current_state.get_turn():
                     print("DRAW")
 
+
+def aggiorna_file(self, win):
+    with open('data.json', 'r') as f:
+        dati = json.load(f)
+    if win:
+        if self.player == "WHITE":
+            for st in self.list_of_state_reached:
+                dati[st] = dati.get(st, 0) + 1
+
+            with open('data.json', 'w') as f:
+                json.dump(dati, f, indent=4)
+        else:
+            for st in self.list_of_state_reached:
+                dati[st] = dati.get(st, 0) - 1
+
+            with open('data.json', 'w') as f:
+                json.dump(dati, f, indent=4)
+    else:
+        if self.player == "WHITE":
+            for st in self.list_of_state_reached:
+                dati[st] = dati.get(st, 0) - 1
+
+            with open('data.json', 'w') as f:
+                json.dump(dati, f, indent=4)
+        else:
+            for st in self.list_of_state_reached:
+                dati[st] = dati.get(st, 0) + 1
+
+            with open('data.json', 'w') as f:
+                json.dump(dati, f, indent=4)
 
 
 

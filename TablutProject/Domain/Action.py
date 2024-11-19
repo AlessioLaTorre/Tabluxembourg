@@ -1,6 +1,7 @@
 import copy
 from dataclasses import dataclass
 from typing import Union
+import random
 
 
 class InvalidParameterException(Exception):
@@ -62,15 +63,18 @@ class Action:
         return int(self.to[1]) - 1
 
 
-    def is_good_enough(self, color, state):
+    def is_good_enough(self, color, state, list_of_state_reached):
         file = ...
         stateCopy = state.clone()
         pawn_eaten = self.apply_action(color, state)
-        #pawn_eaten = self.pawn_eaten(color, stateCopy, state)
-        king_safety = self.king_safety(color, stateCopy, state)
 
+        '''#pawn_eaten = self.pawn_eaten(color, stateCopy, state)
+        #king_safety = self.king_safety(color, stateCopy, state)'''
 
-        list_stati_nel_gioco_attuale = []
+        if random.Random.random() < 0.9:
+            list_of_state_reached.append(hash(stateCopy))
+            return True
+        return False
         ...
 
     def king_safety(self, color, stateCopy, originalState):

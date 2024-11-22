@@ -7,11 +7,11 @@ from TablutProject.Domain.Action import Action
 class State:
     # Enum per i turni del gioco
     class Turn(Enum):
-        WHITE = "W"
-        BLACK = "B"
-        WHITEWIN = "WW"
-        BLACKWIN = "BW"
-        DRAW = "D"
+        WHITE = "WHITE"
+        BLACK = "BLACK"
+        WHITEWIN = "WHITEWIN"
+        BLACKWIN = "BLACKWIN"
+        DRAW = "DRAW"
 
         def __str__(self):
             return self.value
@@ -51,10 +51,6 @@ class State:
     def __init__(self):
         self.board = [[State.Pawn.EMPTY for _ in range(9)] for _ in range(9)]
         self.turn = State.Turn.WHITE
-
-        self.board[4][4] = State.Pawn.THRONE
-
-        self.turn = State.Turn.BLACK
 
         self.board[4][4] = State.Pawn.KING
 
@@ -220,7 +216,7 @@ class State:
             (6, 8),
             (7, 8),'''
 
-        if color == "W" or color == "B":
+        if color == "WHITE" or color == "BLACK":
             for r, c in moves:
                 if (r, c) not in list_moves_banned:
                     ret.append(Action((i, j), (r, c), color))
@@ -237,7 +233,7 @@ class State:
             for j in range(9):
                 if self.board[i][j] == color:
                     ammissible_actions += self.get_moves(
-                        np.array(self.board), i, j, color
+                        np.array(self.board), i, j
                     )
         return ammissible_actions
 

@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="798697b2-8c96-45f0-b029-6b186acab0bb" name="Changes" comment="Start modelling player">
+    <list default="true" id="798697b2-8c96-45f0-b029-6b186acab0bb" name="Changes" comment="Start of reinforcement learning">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TablutProject/Domain/Action.py" beforeDir="false" afterPath="$PROJECT_DIR$/TablutProject/Domain/Action.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TablutProject/State/State.py" beforeDir="false" afterPath="$PROJECT_DIR$/TablutProject/State/State.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TablutProject/TablutPlayerClient/Client.py" beforeDir="false" afterPath="$PROJECT_DIR$/TablutProject/TablutPlayerClient/Client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TablutProject/Utils/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/TablutProject/Utils/Utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +19,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="package.json" />
       </list>
     </option>
   </component>
@@ -68,7 +69,10 @@
       <workItem from="1731750018683" duration="9500000" />
       <workItem from="1731837307985" duration="4865000" />
       <workItem from="1731853748049" duration="1852000" />
-      <workItem from="1732030857226" duration="5233000" />
+      <workItem from="1732030857226" duration="8445000" />
+      <workItem from="1732214186539" duration="611000" />
+      <workItem from="1732263470238" duration="816000" />
+      <workItem from="1732297122602" duration="1294000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -102,7 +106,23 @@
       <option name="project" value="LOCAL" />
       <updated>1731756488143</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Apply action method">
+      <option name="closed" value="true" />
+      <created>1732037241103</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1732037241103</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Start of reinforcement learning">
+      <option name="closed" value="true" />
+      <created>1732039458728</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1732039458728</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -111,6 +131,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first commit" />
     <MESSAGE value="Start modelling player" />
-    <option name="LAST_COMMIT_MESSAGE" value="Start modelling player" />
+    <MESSAGE value="Apply action method" />
+    <MESSAGE value="Start of reinforcement learning" />
+    <option name="LAST_COMMIT_MESSAGE" value="Start of reinforcement learning" />
   </component>
 </project>

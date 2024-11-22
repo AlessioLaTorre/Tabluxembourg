@@ -78,13 +78,13 @@ class StreamUtils:
         board = np.zeros((9, 9), dtype=State.Pawn)
         for i in range(0, 9):
             for j in range(0, 9):
-                if board_array[i, j] == 'EMPTY':            # qua abbiamo supposto che ci diano 'EMPTY', 'WHITE', ecc
+                if board_array[i, j] == 'O':            # qua abbiamo supposto che ci diano 'EMPTY', 'WHITE', ecc
                     board[i, j] = State.Pawn.EMPTY#.value
-                elif board_array[i, j] == 'WHITE':
+                elif board_array[i, j] == 'W':
                     board[i, j] = State.Pawn.WHITE#.value
-                elif board_array[i, j] == 'BLACK':
+                elif board_array[i, j] == 'B':
                     board[i, j] = State.Pawn.BLACK#.value
-                elif board_array[i, j] == 'KING':
+                elif board_array[i, j] == 'K':
                     board[i, j] = State.Pawn.KING#.value
                     king_position = (i, j)
 

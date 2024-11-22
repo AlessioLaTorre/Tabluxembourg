@@ -14,7 +14,7 @@ class InvalidParameterException(Exception):
 class Action:
     from_: tuple  # Usato `from_` perché `from` è una parola riservata in Python
     to: tuple
-    turn: str  # `turn` rappresenterà una stringa che indica il turno (ad esempio "W" o "B")
+    turn: str  # `turn` rappresenterà una stringa che indica il turno (ad esempio "WHITE" o "BLACK")
 
     def __post_init__(self):
         # Validazione delle stringhe `from_` e `to`
@@ -94,7 +94,6 @@ class Action:
             list_of_state_reached.append(hash(stateCopy))
             return True
         return False
-        ...
 
     '''def king_safety(self, color, stateCopy, originalState):
         new_board = stateCopy.board
@@ -112,10 +111,10 @@ class Action:
     def apply_action(self, state):
         color = state.turn
         board = state.board
-        if color == "W" or color == "K":
-            opponent_color = "B"
+        if color == "WHITE":
+            opponent_color = "BLACK"
         else:
-            opponent_color = "W"
+            opponent_color = "WHITE"
 
         camp =  [
             #Starting black + throne

@@ -17,7 +17,7 @@ class TablutClient:
         self.name = name
         self.timeout = timeout
         self.server_ip = ip_address
-        self.current_state: State = None
+        self.current_state: State = State() # (prima era None)
 
         if player.lower() == "white":
             self.player = "WHITE"

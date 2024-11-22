@@ -123,8 +123,9 @@ class State:
     def set_turn(self, turn):
         self.turn = turn
 
-    def get_moves(self, board, i, j, color):
+    def get_moves(self, board, i, j):
         # Verifica che ci sia una pedina nella posizione
+        color = self.turn
         if board[i, j] == 0:
             return []
         ret = []
@@ -229,7 +230,8 @@ class State:
                     ret.append(Action((i, j), (r, c), color))
         return ret
 
-    def ammissible_actions(self, color):
+    def ammissible_actions(self):
+        color = self.turn
         ammissible_actions = []
         for i in range(9):
             for j in range(9):

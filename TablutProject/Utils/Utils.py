@@ -40,9 +40,9 @@ class StreamUtils:
 
     @staticmethod
     def send_action(socket, action):
-        from_ = action.get_from()
-        to_ = action.get_to()
-        turn = action.get_turn()
+        from_ : str = action.get_from() 
+        to_ : str   = action.get_to()
+        turn : str  = action.get_turn()
 
         to_send = json.dumps({"from": from_,
                               "to": to_,
@@ -78,14 +78,14 @@ class StreamUtils:
         board = np.zeros((9, 9), dtype=State.Pawn)
         for i in range(0, 9):
             for j in range(0, 9):
-                if board_array[i, j] == 'EMPTY':
-                    board[i, j] = State.Pawn.EMPTY.value
+                if board_array[i, j] == 'EMPTY':            # qua abbiamo supposto che ci diano 'EMPTY', 'WHITE', ecc
+                    board[i, j] = State.Pawn.EMPTY#.value
                 elif board_array[i, j] == 'WHITE':
-                    board[i, j] = State.Pawn.WHITE.value
+                    board[i, j] = State.Pawn.WHITE#.value
                 elif board_array[i, j] == 'BLACK':
-                    board[i, j] = State.Pawn.BLACK.value
+                    board[i, j] = State.Pawn.BLACK#.value
                 elif board_array[i, j] == 'KING':
-                    board[i, j] = State.Pawn.KING.value
+                    board[i, j] = State.Pawn.KING#.value
                     king_position = (i, j)
 
 

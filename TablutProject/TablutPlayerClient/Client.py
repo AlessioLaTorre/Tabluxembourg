@@ -21,7 +21,7 @@ class TablutPlayerClient(TablutClient):
         while True:
             board, turn = StreamUtils.read_state(self.socket)
             self.current_state.set_board(board)
-            self.current_state.set_turn(turn)
+            self.current_state.set_turn(turn) # B or W
 
             print(f"Current state: {self.current_state}")
 
@@ -29,12 +29,13 @@ class TablutPlayerClient(TablutClient):
 
             if self.player == "WHITE":
                 if self.current_state.turn == "W":
-                    ammisible_actions = self.current_state.ammisible_actions("W")
+                    ammisible_actions = self.current_state.ammisible_actions()
                     r = np.arange(len(ammisible_actions))
                     np.random.shuffle(r)
                     for i in r:
                         action = ammisible_actions[i]
-                        if action.is_good_enough(self.player, self.current_state, self.list_of_state_reached):
+                        if action.is_good_enough(self.current_state, self.list_of_state_reached):
+                            # color = self.player è stato tolto ed era il primo argomento
                             StreamUtils.send_action(self.socket, action)
                             break
                     ...
@@ -53,8 +54,8 @@ class TablutPlayerClient(TablutClient):
                     print("DRAW")
                     break
 
-            else:
-                if self.current_state.turn == "B":
+            else: # se siamo i neri
+                if self.current_state.turn.BLACK == self.current_state.get_turn(): #se è il turno dei neri
                     ...
                 elif self.current_state.turn.WHITE == self.current_state.get_turn():
                     print("Waiting for opponent move ... ")
@@ -70,7 +71,7 @@ class TablutPlayerClient(TablutClient):
                     print("DRAW")
 
 
-def aggiorna_file(self, win):
+def aggiorna_file(self, win: bool):
     with open('data.json', 'r') as f:
         dati = json.load(f)
     if win:
@@ -80,7 +81,7 @@ def aggiorna_file(self, win):
 
             with open('data.json', 'w') as f:
                 json.dump(dati, f, indent=4)
-        else:
+        else: # se siamo i neri e abbiamo vinto
             for st in self.list_of_state_reached:
                 dati[st] = dati.get(st, 0) - 1
 
@@ -93,7 +94,7 @@ def aggiorna_file(self, win):
 
             with open('data.json', 'w') as f:
                 json.dump(dati, f, indent=4)
-        else:
+        else: # se siamo i neri e abbiamo perso
             for st in self.list_of_state_reached:
                 dati[st] = dati.get(st, 0) + 1
 

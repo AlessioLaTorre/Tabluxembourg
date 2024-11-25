@@ -1,4 +1,5 @@
 import copy
+import json
 from dataclasses import dataclass
 from typing import Union
 import random
@@ -82,16 +83,27 @@ class Action:
         return self.to[0]
 
     # togliamo color tutte le volte che c'è is_good_enough
-    def is_good_enough(self, state, list_of_state_reached): #abbiamo tolto color (primo arg)
-        file = ...
+    def is_good_enough(self, state, list_of_state_reached, isLast): #abbiamo tolto color (primo arg)
+        with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'r') as f:
+            file = json.load(f)
         stateCopy = state.clone()
         pawn_eaten = self.apply_action(stateCopy)
 
         '''#pawn_eaten = self.pawn_eaten(color, stateCopy, state)
         #king_safety = self.king_safety(color, stateCopy, state)'''
 
-        if random.Random.random() < 0.9:
-            list_of_state_reached.append(hash(stateCopy))
+        hstate = hash(stateCopy)
+        try:
+            if file[hstate] > 0 and self.turn == 'WHITE':
+                if random.random() > 0.6:
+                    return True
+            elif file[hstate] < 0 and self.turn == 'BLACK':
+                if random.random() > 0.6:
+                    return True
+        except KeyError:
+            pass
+        if random.random() < 0.7 or isLast:
+            list_of_state_reached.append(hstate)
             return True
         return False
 
@@ -187,6 +199,43 @@ class Action:
                             (board[rr][rc] == color or (rr,rc) in camp):
                         return 100
         return num_pawn_eaten
+
+
+
+
+    #SOLO PER PROVA PER VEDERE SE AGGIUNGE STATI AL FILE
+    def win(self, state):
+        if self.turn == "WHITE":
+            winning_position = [
+                (0, 1),
+                (0, 2),
+                (0, 6),
+                (0, 7),
+                (8, 1),
+                (8, 2),
+                (8, 6),
+                (8, 7),
+                (1, 0),
+                (2, 0),
+                (6, 0),
+                (7, 0),
+                (1, 8),
+                (2, 8),
+                (6, 8),
+                (7, 8),
+            ]
+            if state.board[self.from_[0]][self.from_[1]] == "K" and \
+                    self.to in winning_position:
+                return True
+        else:
+            stateCopy = state.clone()
+            king_eaten = self.apply_action(stateCopy)
+            if king_eaten == 100:
+                return True
+            return False
+
+
+
 
 
 

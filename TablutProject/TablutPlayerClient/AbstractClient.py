@@ -1,5 +1,7 @@
 import socket
 import json
+import struct
+
 from TablutProject.Utils.Utils import StreamUtils
 from TablutProject.State import State
 
@@ -14,10 +16,11 @@ class TablutClient:
         :param timeout: Timeout in seconds (default is 60)
         :param ip_address: IP address of the server (default is "localhost")
         """
+        self.list_of_state_reached = []
         self.name = name
         self.timeout = timeout
         self.server_ip = ip_address
-        self.current_state: State = State() # (prima era None)
+        self.current_state: State = State.State() # (prima era None)
 
         if player.lower() == "white":
             self.player = "WHITE"
@@ -35,9 +38,6 @@ class TablutClient:
         self.socket.connect((self.server_ip, self.port))
         print("Connessione effettuata")
 
-        self.in_stream = self.socket.makefile("r")
-        self.out_stream = self.socket.makefile("w")
-
     def write(self, action):
         """
         Sends an action to the server.
@@ -51,9 +51,19 @@ class TablutClient:
         Sends the player's name to the server.
         """
         print(f"Invio nome {self.name}")
-        json_name = json.dumps(self.name)
-        self.out_stream.write(json_name + "\n")
-        self.out_stream.flush()
+        #json_name = json.dumps(self.name)
+        #self.socket.sendall(json_name.encode('utf-8'))
+        encoded_string = self.name.encode('utf-8')
+
+        # Calcola la lunghezza della stringa
+        length = len(encoded_string)
+
+        # Invia la lunghezza come un intero (big-endian)
+        self.socket.sendall(struct.pack('>I', length))
+
+        # Invia la stringa codificata in UTF-8
+        self.socket.sendall(encoded_string)
+
         print("Invio nome effettuato")
 
     def read(self):
@@ -68,8 +78,6 @@ class TablutClient:
         """
         Closes the connection to the server.
         """
-        self.in_stream.close()
-        self.out_stream.close()
         self.socket.close()
 
 

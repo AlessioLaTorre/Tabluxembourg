@@ -120,6 +120,26 @@ class State:
         self.turn = turn
 
     def get_moves(self, board, i, j):
+
+        list_moves_banned = [
+            # Starting black
+            (3, 0),
+            (4, 0),
+            (5, 0),
+            (4, 1),
+            (3, 8),
+            (4, 8),
+            (5, 8),
+            (4, 7),
+            (0, 3),
+            (0, 4),
+            (0, 5),
+            (1, 4),
+            (8, 3),
+            (8, 4),
+            (8, 5),
+            (7, 4)]
+
         # Verifica che ci sia una pedina nella posizione
         color = self.turn
         if board[i, j] == 0:
@@ -129,8 +149,16 @@ class State:
         board[board == "B"] = 2
         board[board == "W"] = 1
         board[board == "K"] = 1
+
+        #Tolgo tutte le linee dove c'è in mezzo un camp nero
+        for pos in list_moves_banned:
+            board[pos] = 2
+
         # Matrice booleana delle caselle vuote
         is_empty = board == "0"
+
+
+        #print(board)
 
         # Righe e colonne pertinenti
         row = is_empty[i, :]
@@ -171,24 +199,7 @@ class State:
             (8, 5),
             (7, 4),
         ]
-        list_moves_banned = [
-            #Starting black
-            (3, 0),
-            (4, 0),
-            (5, 0),
-            (4, 1),
-            (3, 8),
-            (4, 8),
-            (5, 8),
-            (4, 7),
-            (0, 3),
-            (0, 4),
-            (0, 5),
-            (1, 4),
-            (8, 3),
-            (8, 4),
-            (8, 5),
-            (7, 4)]
+
         ''',
             #update
             #First Row
@@ -228,10 +239,15 @@ class State:
 
     def ammissible_actions(self):
         color = self.turn
+        if color == "WHITE":
+            color = ["W", "K"]
+        else:
+            color = ["B"]
+        print("BUH")
         ammissible_actions = []
         for i in range(9):
             for j in range(9):
-                if self.board[i][j] == color:
+                if self.board[i][j] in color:
                     ammissible_actions += self.get_moves(
                         np.array(self.board), i, j
                     )

@@ -14,92 +14,118 @@ import argparse
 from TablutProject.Utils.Utils import StreamUtils
 
 class TablutPlayerClient(TablutClient):
-    list_of_state_reached: list
 
     def play(self):
 
         while True:
-            board, turn = StreamUtils.read_state(self.socket)
-            self.current_state.set_board(board)
-            self.current_state.set_turn(turn) # B or W
+            self.read()
 
             print(f"Current state: {self.current_state}")
 
             print(f"Turn: {self.current_state.turn}")
 
             if self.player == "WHITE":
-                if self.current_state.turn == "W":
-                    ammisible_actions = self.current_state.ammisible_actions()
-                    r = np.arange(len(ammisible_actions))
-                    np.random.shuffle(r)
-                    for i in r:
-                        action = ammisible_actions[i]
-                        if action.is_good_enough(self.current_state, self.list_of_state_reached):
-                            # color = self.player è stato tolto ed era il primo argomento
-                            StreamUtils.send_action(self.socket, action)
-                            break
-                    ...
-                elif self.current_state.turn.BLACK == self.current_state.get_turn():
+                if self.current_state.turn == "WHITE":
+                    action_to_send = self.choose_action()
+
+                    print(f"Ammissible action: {action_to_send}")
+                    self.write(action_to_send)
+                    print(f"messaggio inviato")
+
+
+                    ##DA CAMBIARE
+                    if action_to_send.win(self.current_state):
+                        self.aggiorna_file(True)
+
+                elif self.current_state.Turn.BLACK == self.current_state.get_turn():
                     print("Waiting for opponent move ... ")
                     break
-                elif self.current_state.turn.BLACKWIN == self.current_state.get_turn():
+                elif self.current_state.Turn.BLACKWIN == self.current_state.get_turn():
                     self.aggiorna_file(False)
                     print("YOU LOSE")
                     break
-                elif self.current_state.turn.WHITEWIN == self.current_state.get_turn():
+                elif self.current_state.Turn.WHITEWIN == self.current_state.get_turn():
                     self.aggiorna_file(True)
                     print("YOU WIN")
                     break
-                elif self.current_state.turn.DRAW == self.current_state.get_turn():
+                elif self.current_state.Turn.DRAW == self.current_state.get_turn():
                     print("DRAW")
                     break
 
             else: # se siamo i neri
-                if self.current_state.turn.BLACK == self.current_state.get_turn(): #se è il turno dei neri
-                    ...
-                elif self.current_state.turn.WHITE == self.current_state.get_turn():
+                if self.current_state.turn == "BLACK": #se è il turno dei neri
+                    action_to_send = self.choose_action()
+                    print(f"Ammissible action: {action_to_send}")
+                    self.write(action_to_send)
+
+                    if action_to_send.win(self.current_state):
+                        self.aggiorna_file(True)
+
+                elif self.current_state.Turn.WHITE == self.current_state.get_turn():
                     print("Waiting for opponent move ... ")
-                elif self.current_state.turn.BLACKWIN == self.current_state.get_turn():
+                    break
+                elif self.current_state.Turn.BLACKWIN == self.current_state.get_turn():
                     self.aggiorna_file(True)
                     print("YOU WIN")
                     break
-                elif self.current_state.turn.WHITEWIN == self.current_state.get_turn():
+                elif self.current_state.Turn.WHITEWIN == self.current_state.get_turn():
                     self.aggiorna_file(False)
                     print("YOU LOSE")
                     break
-                elif self.current_state.turn.DRAW == self.current_state.get_turn():
+                elif self.current_state.Turn.DRAW == self.current_state.get_turn():
                     print("DRAW")
 
 
-def aggiorna_file(self, win: bool):
-    with open('data.json', 'r') as f:
-        dati = json.load(f)
-    if win:
-        if self.player == "WHITE":
-            for st in self.list_of_state_reached:
-                dati[st] = dati.get(st, 0) + 1
 
-            with open('data.json', 'w') as f:
-                json.dump(dati, f, indent=4)
-        else: # se siamo i neri e abbiamo vinto
-            for st in self.list_of_state_reached:
-                dati[st] = dati.get(st, 0) - 1
+    def choose_action(self):
+        ammissible_actions = self.current_state.ammissible_actions()
+        r = np.arange(len(ammissible_actions))
+        np.random.shuffle(r)
+        '''
+        Essendo la selezione random metto un contatore per far si che quando arrivo all'ultima
+        azione venga presa obbligatoriamente per avere un'azione da inviare'''
+        count = 0
+        isLast = False
+        for i in r:
+            count += 1
+            if count == len(ammissible_actions) - 1:
+                isLast = True
+            action = ammissible_actions[i]
+            print(f"Ammissible action: {action}")
+            if action.is_good_enough(self.current_state, self.list_of_state_reached, isLast):
+                return action
 
-            with open('data.json', 'w') as f:
-                json.dump(dati, f, indent=4)
-    else:
-        if self.player == "WHITE":
-            for st in self.list_of_state_reached:
-                dati[st] = dati.get(st, 0) - 1
 
-            with open('data.json', 'w') as f:
-                json.dump(dati, f, indent=4)
-        else: # se siamo i neri e abbiamo perso
-            for st in self.list_of_state_reached:
-                dati[st] = dati.get(st, 0) + 1
 
-            with open('data.json', 'w') as f:
-                json.dump(dati, f, indent=4)
+    def aggiorna_file(self, win: bool):
+        with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'r') as f:
+            dati = json.load(f)
+        if win:
+            if self.player == "WHITE":
+                for st in self.list_of_state_reached:
+                    dati[st] = dati.get(st, 0) + 1
+
+                with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'w') as f:
+                    json.dump(dati, f, indent=4)
+            else: # se siamo i neri e abbiamo vinto
+                for st in self.list_of_state_reached:
+                    dati[st] = dati.get(st, 0) - 1
+
+                with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'w') as f:
+                    json.dump(dati, f, indent=4)
+        else:
+            if self.player == "WHITE":
+                for st in self.list_of_state_reached:
+                    dati[st] = dati.get(st, 0) - 1
+
+                with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'w') as f:
+                    json.dump(dati, f, indent=4)
+            else: # se siamo i neri e abbiamo perso
+                for st in self.list_of_state_reached:
+                    dati[st] = dati.get(st, 0) + 1
+
+                with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'w') as f:
+                    json.dump(dati, f, indent=4)
 
 
 
@@ -125,26 +151,12 @@ if __name__ == "__main__":
         "--ip",
         help="IP address of the server",
         required=True,
-        default="127.0.0.1",
+        default="localhost",
     )
 
     args = parser.parse_args()
 
-    example = TablutClient(args.player, "Tabluxemburg", int(args.timeout), args.ip)
+    example = TablutPlayerClient(args.player, "Tabluxemburg", int(args.timeout), args.ip)
     example.declare_name()
 
-    while True:
-        # Legge lo stato attuale
-        example.read()
-        print(example.current_state)
-
-        # Pensa a una mossa
-        action = State.Pawn.from_string(input("Inserisci la mossa: "))
-
-        # Aggiorna lo stato
-        example.current_state.apply_move(action)
-
-        # Invia la mossa al server
-        example.write(action)
-
-        time.sleep(1)
+    example.play()

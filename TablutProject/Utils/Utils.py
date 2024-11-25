@@ -1,4 +1,5 @@
 import json
+import string
 import struct
 from TablutProject.State import State
 import numpy as np
@@ -48,8 +49,8 @@ class StreamUtils:
                               "to": to_,
                               "turn": turn})
 
-        socket.send(struct.pack('>I', len(to_send)))
-        socket.send(to_send.encode('utf-8'))
+        socket.sendall(struct.pack('>I', len(to_send)))
+        socket.sendall(to_send.encode('utf-8'))
 
     @staticmethod
     def read_state(socket):
@@ -62,9 +63,13 @@ class StreamUtils:
         length = int.from_bytes(length_bytes, 'big')
         '''
 
+        print("Ricevo")
         # Ricevi il messaggio JSON basato sulla lunghezza
-        json_state = recvall(socket, 4)
+        len_bytes = struct.unpack('>i', recvall(socket, 4))[0]
+        current_state_server_bytes = socket.recv(len_bytes)
+        print("Ricevuto")
 
+        json_state = json.loads(current_state_server_bytes)
 
         #########################################################################
         # Convert to list
@@ -74,32 +79,39 @@ class StreamUtils:
         # Selecting board (the array is (2,2) matrix, it has board and turn info)
         board_array = np.array(ar[0, 1], dtype=object)
         turn = ar[1, 1]
+        print(turn)
         # Converting in a numerical matrix
-        board = np.zeros((9, 9), dtype=State.Pawn)
+        board = np.zeros((9, 9), dtype=str)
         for i in range(0, 9):
             for j in range(0, 9):
-                if board_array[i, j] == 'O':            # qua abbiamo supposto che ci diano 'EMPTY', 'WHITE', ecc
-                    board[i, j] = State.Pawn.EMPTY#.value
-                elif board_array[i, j] == 'W':
-                    board[i, j] = State.Pawn.WHITE#.value
-                elif board_array[i, j] == 'B':
-                    board[i, j] = State.Pawn.BLACK#.value
-                elif board_array[i, j] == 'K':
-                    board[i, j] = State.Pawn.KING#.value
+                if board_array[i, j] == 'EMPTY':            # qua abbiamo supposto che ci diano 'EMPTY', 'WHITE', ecc
+                    board[i, j] = "O" #State.State.Pawn.EMPTY#.value
+                elif board_array[i, j] == 'WHITE':
+                    board[i, j] = "W" #State.State.Pawn.WHITE#.value
+                elif board_array[i, j] == 'BLACK':
+                    board[i, j] = "B" #State.State.Pawn.BLACK#.value
+                elif board_array[i, j] == 'KING':
+                    board[i, j] = "K" #State.State.Pawn.KING#.value
                     king_position = (i, j)
 
+        print(board)
 
         return board, turn
 
 
 def recvall(sock, n):
     # Funzione ausiliaria per ricevere n byte o restituire None se viene raggiunta la fine del file (EOF)
-    data = b''
-    while len(data) < n:
-        packet = sock.recv(n - len(data))
-        if not packet:
-            return None
-        data += packet
-    return data
+    try:
+        data = b''
+        while len(data) < n:
+            packet = sock.recv(n - len(data))
+            if not packet:
+                return None
+            data += packet
+        print(data)
+        return data
+    except ConnectionResetError:
+        print("Partita finita")
+
 
 

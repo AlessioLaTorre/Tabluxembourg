@@ -162,13 +162,17 @@ class Action:
 
         num_pawn_eaten = 0
 
-        #per capire se si mangiano delle pedine con la mossa
+        # definiamo le caselle in cui il re non viene mangiato come negli altri
+        throne = [(4,4)]
+        around_throne = [(4,3), (4,5), (3,4), (5,4)]
+
+        # per capire se si mangiano delle pedine con la mossa
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Alto, basso, sinistra, destra
         for dr, dc in directions:
-            riga_intermedia = row_to + dr
-            colonna_intermedia = column_to + dc
-            riga_opposta = row_to + 2 * dr
-            colonna_opposta = column_to + 2 * dc
+            riga_intermedia     = row_to + dr
+            colonna_intermedia  = column_to + dc
+            riga_opposta        = row_to + 2 * dr
+            colonna_opposta     = column_to + 2 * dc
 
             # Controlla che le coordinate siano valide
             if 0 <= riga_intermedia < len(board) and 0 <= colonna_intermedia < len(board[0]) and \
@@ -179,25 +183,51 @@ class Action:
                         board[riga_opposta][colonna_opposta] == color or (riga_opposta, colonna_opposta) in camp:
                     # "Mangia" la pedina avversaria
                     #board[riga_intermedia][colonna_intermedia] = "O"
+
+                    # verifichiamo se la pedina è il re
+                    if board[riga_intermedia][colonna_intermedia] == "K":
+                        # il K può esser mangiato normalmente se non è nelle caselle attorno al trono e sul trono
+                        if (riga_intermedia, colonna_intermedia) not in throne + around_throne:
+                            print("BLACK player wins")
+                            return 100
+                        
                     state.remove_pawn(row = riga_intermedia, column = colonna_intermedia)
                     num_pawn_eaten += 1
 
-                # per verificare se il K è circondato
+                # per verificare se il K è circondato nelle caselle speciali
                 if color == "B":
-                    upr = riga_intermedia - 1
-                    upc = colonna_intermedia
-                    downr = riga_intermedia + 1
-                    downc = colonna_intermedia
-                    lr = riga_intermedia
-                    lc = colonna_intermedia - 1
-                    rr = riga_intermedia
-                    rc = colonna_intermedia + 1
+                    if board[4][4] == "K":
+                        # qua non so se va bene perché ho considerato che la casella fosse già "B"
+                        # la seconda riga della condizione if è superflua se viene già cambiata la "O" in "B"
+                        # sennò si può forse fare sum([board[r][c]=="B" for r,c in around_throne])>=3 and \....
+                        if [board[r][c] for r,c in around_throne] == 4*["B"] and \
+                            (row_to, column_to) in around_throne:
+                            print("BLACK player wins")
+                            return 100
+                    # manca qui il caso in cui il re sia attorno a trono, i.e 
+                    # if "K" in [board[r][c] for r,c in around_throne]:
+                    #   e poi mettere le tre caselle adiacenti (forse è comodo sapere quali sono gli r,c per cui si verifica la condizione)
+                
+                            
+
+
+                
+                '''if color == "B":
+                    
+                    upr     = riga_intermedia - 1
+                    upc     = colonna_intermedia
+                    downr   = riga_intermedia + 1
+                    downc   = colonna_intermedia
+                    lr  = riga_intermedia
+                    lc  = colonna_intermedia - 1
+                    rr  = riga_intermedia
+                    rc  = colonna_intermedia + 1
                     if board[riga_intermedia][colonna_intermedia] == "K" and \
                             (board[upr][upc] == color or (upr, upc) in camp) and \
                             (board[downr][downc] == color or (downr, downc) in camp) and \
                             (board[lr][lc] == color or (lr, lc) in camp) and \
                             (board[rr][rc] == color or (rr,rc) in camp):
-                        return 100
+                        return 100'''
         return num_pawn_eaten
 
 

@@ -5,6 +5,11 @@ import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
+parent_folder = os.path.abspath(os.getcwd())
+#print('parent_folder: '+parent_folder)
+statesValuesPath = os.path.join(parent_folder, 'TABLUT','Tabluxembourg','TablutProject','statesValues.json')
+#print('states       : '+statesValuesPath)
+
 
 from AbstractClient import TablutClient
 from TablutProject.State import State
@@ -19,10 +24,10 @@ class TablutPlayerClient(TablutClient):
 
         while True:
             self.read()
+            # ho aggiunto 'moves per leggibilità
+            print(f"Current state:\n{self.current_state} moves")
 
-            print(f"Current state: {self.current_state}")
-
-            print(f"Turn: {self.current_state.turn}")
+            #print(f"Turn: {self.current_state.turn}")
 
             if self.player == "WHITE":
                 if self.current_state.turn == "WHITE":
@@ -98,33 +103,33 @@ class TablutPlayerClient(TablutClient):
 
 
     def aggiorna_file(self, win: bool):
-        with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'r') as f:
+        with open(statesValuesPath, 'r') as f:
             dati = json.load(f)
         if win:
             if self.player == "WHITE":
                 for st in self.list_of_state_reached:
                     dati[st] = dati.get(st, 0) + 1
 
-                with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'w') as f:
+                with open(statesValuesPath, 'w') as f:
                     json.dump(dati, f, indent=4)
             else: # se siamo i neri e abbiamo vinto
                 for st in self.list_of_state_reached:
                     dati[st] = dati.get(st, 0) - 1
 
-                with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'w') as f:
+                with open(statesValuesPath, 'w') as f:
                     json.dump(dati, f, indent=4)
         else:
             if self.player == "WHITE":
                 for st in self.list_of_state_reached:
                     dati[st] = dati.get(st, 0) - 1
 
-                with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'w') as f:
+                with open(statesValuesPath, 'w') as f:
                     json.dump(dati, f, indent=4)
             else: # se siamo i neri e abbiamo perso
                 for st in self.list_of_state_reached:
                     dati[st] = dati.get(st, 0) + 1
 
-                with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'w') as f:
+                with open(statesValuesPath, 'w') as f:
                     json.dump(dati, f, indent=4)
 
 

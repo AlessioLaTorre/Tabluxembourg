@@ -3,7 +3,13 @@ import json
 from dataclasses import dataclass
 from typing import Union
 import random
+import os
 
+
+parent_folder = os.path.abspath(os.getcwd())
+#print('parent_folder: '+parent_folder)
+statesValuesPath = os.path.join(parent_folder, 'TABLUT','Tabluxembourg','TablutProject','statesValues.json')
+#print('states       : '+statesValuesPath)
 
 class InvalidParameterException(Exception):
     """Eccezione personalizzata per parametri non validi."""
@@ -84,7 +90,7 @@ class Action:
 
     # togliamo color tutte le volte che c'è is_good_enough
     def is_good_enough(self, state, list_of_state_reached, isLast): #abbiamo tolto color (primo arg)
-        with open(r'C:\Users\ACER-PC\PycharmProjects\pythonProject4\TablutProject\statesValues.json', 'r') as f:
+        with open(statesValuesPath, 'r') as f:
             file = json.load(f)
         stateCopy = state.clone()
         pawn_eaten = self.apply_action(stateCopy)
